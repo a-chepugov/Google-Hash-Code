@@ -6,7 +6,7 @@ class Cell {
     }
 
     valueOf() {
-        return this.value
+        return this.toString();
     }
 
     toString() {

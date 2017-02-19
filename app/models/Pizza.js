@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const Slice = require ('./Slice');
 const Cell = require ('./Cell');
+const Field = require ('./Field');
 
 class Pizza {
     constructor(data) {
@@ -9,26 +10,7 @@ class Pizza {
     }
 
     fieldForSlice(point) {
-        let field = [];
-        let {R, C, H, cells} = this;
-        let {r, c} = point;
-        let drMax = r + H < R? H : (R - r);
-
-        for (let dr = 0; dr < drMax; dr++ ) {
-            let rI = dr + r;
-
-            let row = [];
-            let dcH = Math.floor(H / (dr + 1));
-            let dcMax = dcH + c < C? dcH : (C - c);
-
-            for (let dc = 0; dc < dcMax; dc++ ) {
-                let cI = dc + c;
-                let cell = cells[rI][cI];
-                row.push(cell)
-            }
-            field.push(row);
-        }
-        return field;
+        return new Field(this, point);
     }
 }
 
@@ -45,20 +27,16 @@ Pizza.createInstance = async function createInstance(file) {
 
             let [R, C, L, H] = dataProps;
             let cells = [];
-            let cells2 = [];
 
             for (let r = 0; r < R; r++) {
                 let lineIndex = r + 1;
-                let row = lines[lineIndex].split('');
+                let row = lines[lineIndex].split('').map((item, c)=> new Cell(r, c, item) );
                 cells.push(row);
-                let row2 = lines[lineIndex].split('').map((item, c)=> new Cell(r, c, item) );
-                cells2.push(row2);
             }
 
             let data = {
                 raw,
                 cells,
-                cells2,
                 R, C, L, H
             };
 

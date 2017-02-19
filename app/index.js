@@ -22,19 +22,34 @@ async function index() {
 
     let {R, C, L} = pizza;
 
-    for (let r = 0; r < R; r++) {
-        for (let c = 0; c < C; c++) {
-            let p = new Point(r, c);
-            // let field = fieldForSlice(pizza, p);
-            let field = pizza.fieldForSlice(p);
-            let slicesAll = createSlices(field);
-            // console.dir(slicesAll, {color: true, depth: null});
 
-            let slices = slicesAll.filter((item) => isValidSlice(item, L));
-            // let slices = slicesAll.filter((item)=>item.isEnoughItems(L))
-            console.log('index.js:30', slicesAll.length, slices.length);
-        }
-    }
+    let p = new Point(195, 245);
+    let field = pizza.fieldForSlice(p);
+    console.dir(field, {color: true, depth: null});
+
+    let slicesAll = createSlices(field);
+    console.dir(slicesAll, {color: true, depth: null});
+
+    let slices = slicesAll.filter((item) => isValidSlice(item, L));
+    // let slices = slicesAll.filter((item)=>item.isEnoughItems(L))
+    // console.log('index.js:30', slicesAll.length, slices.length);
+
+
+    // for (let r = 0; r < R; r++) {
+    //     for (let c = 0; c < C; c++) {
+    //         let p = new Point(r, c);
+    //         // let field = fieldForSlice(pizza, p);
+    //         let field = pizza.fieldForSlice(p);
+    //         // console.dir(field, {color: true, depth: null});
+    //
+    //         let slicesAll = createSlices(field);
+    //         console.dir(slicesAll, {color: true, depth: null});
+    //
+    //         let slices = slicesAll.filter((item) => isValidSlice(item, L));
+    //         // let slices = slicesAll.filter((item)=>item.isEnoughItems(L))
+    //         console.log('index.js:30', slicesAll.length, slices.length);
+    //     }
+    // }
 }
 
 function isValidSlice(slice, L) {
@@ -107,29 +122,6 @@ function isValidSlice(slice, L) {
         }
     }
     return false
-}
-
-function fieldForSlice(pizza, point) {
-    let field = [];
-    let {R, C, H, cells} = pizza;
-    let {r, c} = point;
-    let drMax = r + H < R ? H : (R - r);
-
-    for (let dr = 0; dr < drMax; dr++) {
-        let rI = dr + r;
-
-        let row = [];
-        let dcH = Math.floor(H / (dr + 1));
-        let dcMax = dcH + c < C ? dcH : (C - c);
-
-        for (let dc = 0; dc < dcMax; dc++) {
-            let cI = dc + c;
-            let cell = cells[rI][cI];
-            row.push(cell)
-        }
-        field.push(row);
-    }
-    return field;
 }
 
 module.exports = index;

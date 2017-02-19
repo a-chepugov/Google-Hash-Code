@@ -28,7 +28,7 @@ class Slice {
     }
 
     toString() {
-        let data = this.data;
+        let data = this.field;
         let C = data.length;
         // for(let r = 0; ) {
         //
