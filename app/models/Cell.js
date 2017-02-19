@@ -1,13 +1,16 @@
-
 class Cell {
-    constructor (r, c, value){
+    constructor(r, c, value) {
         this.r = r;
         this.c = c;
         this.value = value
     }
 
-    valueOf () {
+    valueOf() {
         return this.value
+    }
+
+    toString() {
+        return this.value;
     }
 }
 

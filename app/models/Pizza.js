@@ -28,7 +28,7 @@ class Pizza {
             }
             field.push(row);
         }
-        return {point, field};
+        return field;
     }
 }
 
@@ -45,16 +45,20 @@ Pizza.createInstance = async function createInstance(file) {
 
             let [R, C, L, H] = dataProps;
             let cells = [];
+            let cells2 = [];
 
             for (let r = 0; r < R; r++) {
                 let lineIndex = r + 1;
-                let row = lines[lineIndex].split('').map((item, c)=> new Cell(r, c, item) );
+                let row = lines[lineIndex].split('');
                 cells.push(row);
+                let row2 = lines[lineIndex].split('').map((item, c)=> new Cell(r, c, item) );
+                cells2.push(row2);
             }
 
             let data = {
                 raw,
                 cells,
+                cells2,
                 R, C, L, H
             };
 

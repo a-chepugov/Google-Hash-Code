@@ -26,6 +26,14 @@ class Slice {
         }
         return false
     }
+
+    toString() {
+        let data = this.data;
+        let C = data.length;
+        // for(let r = 0; ) {
+        //
+        // }
+    }
 }
 
 Slice.createSlices =  function createSlices(field, point){
