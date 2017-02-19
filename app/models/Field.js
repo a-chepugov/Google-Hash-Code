@@ -1,6 +1,6 @@
 class Field {
     constructor (pizza, point) {
-        let field = [];
+        let fieldCells = [];
         let {R, C, H, cells} = pizza;
         let {r, c} = point;
         let drMax = r + H < R? H : (R - r);
@@ -17,18 +17,19 @@ class Field {
                 let cell = cells[rI][cI];
                 row.push(cell)
             }
-            field.push(row);
+            fieldCells.push(row);
         }
-        Object.assign(this, {point, cells:field})
+        this.point = point;
+        this.cells = fieldCells;
     }
 
-    valueOf () {
-        return this.toString();
+    valueOf() {
+        return this.toString()
     }
 
-    toString () {
-        let string = '';
-        for(let row of this.cells) {
+    toString() {
+        let string = `${this.point}\n`;
+        for (let row of this.cells) {
             string += (row.join('') + '\n');
         }
         return string;

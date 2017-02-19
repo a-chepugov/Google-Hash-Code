@@ -6,11 +6,11 @@ class Cell {
     }
 
     valueOf() {
-        return this.toString();
+        return this.value;
     }
 
     toString() {
-        return this.value;
+        return `${this.value}`;
     }
 }
 
