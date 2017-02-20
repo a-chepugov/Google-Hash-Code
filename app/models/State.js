@@ -4,7 +4,7 @@ class State {
     constructor(R, C) {
         this.R = R;
         this.C = C;
-        const INIT = State.INIT;
+        const INIT = State.FREE;
 
         let cells = [];
         for (let rI = this.R; rI--;) {
@@ -12,6 +12,9 @@ class State {
             cells.push(row)
         }
         this.cells = cells;
+
+        // @todo размещать отрезанные и пропущенные куски
+        this.cutted = [];
     }
 
     getCellState(r, c) {
@@ -30,38 +33,52 @@ class State {
             getCellState: this.getCellState.bind(this),
 
             next() {
+                let FREE = State.FREE;
                 let {
                     R, C,
                     position: {r, c}
                 } = this;
 
-                console.log(`State.js(next):36 ========== ${r} ${c}, ${R} ${C}`);
-
-                while (!(r === R && c === C)) {
-                    console.log(`State.js(next):39 ========== ${r} ${c}`);
-                    if (c < C - 1) {
-                        c++;
-                    } else if (r < R - 1) {
-                        r++;
-                        c = 0;
+                c++;
+                for (let rI = r; rI < R; rI++) {
+                    for (let cI = c; cI < C; cI++) {
+                        if (this.getCellState(rI, cI) === FREE) {
+                            let position = new Point(rI, cI);
+                            this.position = position;
+                            return {
+                                done: false,
+                                value: position
+                            };
+                        }
                     }
-                    if (this.getCellState(r, c) === State.INIT) {
-                        let position = new Point(r, c);
-                        this.position = position;
-                        return {
-                            done: false,
-                            value: position
-                        };
-                    }
+                    c = -1;
                 }
+
+                // let rI = r, cI = c;
+
+                // do {
+                //     do {
+                //         if (this.getCellState(rI, cI) === FREE) {
+                //             let position = new Point(rI, cI);
+                //             this.position = position;
+                //             return {
+                //                 done: false,
+                //                 value: position
+                //             };
+                //         }
+                //         cI++
+                //     } while (cI < C);
+                //     cI = 0;
+                //     rI++
+                //
+                // } while (rI < R);
 
                 return {
                     done: true
-                };
+                }
             }
-        };
+        }
     }
-
 
     toString() {
         let string = `${this.R} ${this.C}\n`;
@@ -76,7 +93,7 @@ class State {
     }
 }
 
-State.INIT = 0;
+State.FREE = 0;
 State.USED = 1;
 State.SKIP = 2;
 
