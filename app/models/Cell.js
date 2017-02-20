@@ -1,3 +1,5 @@
+const Point = require('./Point');
+
 class Cell {
     constructor(r, c, value) {
         this.r = r;
@@ -5,12 +7,16 @@ class Cell {
         this.value = value
     }
 
+    toPoint() {
+        return new Point(this.r, this.c)
+    }
+
     valueOf() {
         return this.value;
     }
 
     toString() {
-        return `${this.value}`;
+        return `${this.r} ${this.c} (${this.value})`;
     }
 }
 

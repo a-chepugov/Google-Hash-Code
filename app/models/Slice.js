@@ -30,15 +30,15 @@ class Slice {
     }
 
     toString() {
-        let string = `${this.point}\n`;
+        let string = `${this.points[0]} -> ${this.points[1]} =>> ${this.area}\n`;
         for (let row of this.cells) {
-            string += (row.join('') + '\n');
+            string += (row.join(' | ') + '\n');
         }
         return string;
     }
 }
 
-Slice.createSlices = function createSlices(field, point) {
+Slice.createSlices = function createSlices(field, pointStart) {
     let cells = field.cells;
     let rMax = cells.length;
     let slices = [];
@@ -54,16 +54,15 @@ Slice.createSlices = function createSlices(field, point) {
                 let rowForSlice = cells[rowForSliceI].slice(0, curLength);
                 slice.push(rowForSlice);
             }
+
             let l = slice.length;
             let r = slice[l - 1];
             let lr = r.length;
+            let pointFinish = (r[lr - 1]).toPoint();
 
-            let point2 = r[lr - 1];
+            let area = (pointFinish.r - pointStart.r + 1) * (pointFinish.c - pointStart.c + 1);
 
-            // console.log('Slice.js:60', l, lr, point, point2);
-
-
-            slices.push(new Slice({point, cells: slice}))
+            slices.push(new Slice({points: [pointStart, pointFinish], cells: slice, area}))
         }
     }
     return slices;

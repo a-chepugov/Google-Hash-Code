@@ -6,7 +6,6 @@ const exec = require('child_process').exec;
 
 const Pizza = require('./models/Pizza');
 const Slice = require('./models/Slice');
-const Cell = require('./models/Cell');
 const Point = require('./models/Point');
 
 // let root = process.cwd();
@@ -37,10 +36,10 @@ async function index() {
 
             let slices = slicesAll.filter((item) => item.isEnoughItems(L));
             // for(let slice of slices) {
-            //     console.log(slice.toString())
+                // console.log(slice.toString() + '\n========\n')
             // }
 
-            console.log('index.js:30', slicesAll.length, slices.length);
+            // console.log('index.js:30', slicesAll.length, slices.length);
         }
     }
 

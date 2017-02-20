@@ -30,7 +30,7 @@ class Field {
     toString() {
         let string = `${this.point}\n`;
         for (let row of this.cells) {
-            string += (row.join('') + '\n');
+            string += (row.join(' | ') + '\n');
         }
         return string;
     }
