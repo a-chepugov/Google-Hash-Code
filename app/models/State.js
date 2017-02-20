@@ -5,16 +5,15 @@ class State {
     constructor(R, C) {
         this.R = R;
         this.C = C;
-        const INIT = State.FREE;
+        const FREE = State.FREE;
 
         let cells = [];
         for (let rI = this.R; rI--;) {
-            let row = Array(C).fill(INIT);
+            let row = Array(C).fill(FREE);
             cells.push(row)
         }
         this.cells = cells;
 
-        // @todo размещать отрезанные и пропущенные куски
         this.cutted = [];
         this.skipped = [];
         this.all = [];
@@ -32,20 +31,18 @@ class State {
         let setCellState = this.setCellState.bind(this);
 
         for (let point of slice) {
-            let {r, c} = point;
-            setCellState(r, c, mark);
+            this.markPoint(point, mark)
         }
     }
 
     cutSlice(slice) {
-        this.cutted.push(slice);
         this.all.push(slice);
-
-        this.markSlice(State.USED)
+        this.cutted.push(slice);
+        this.markSlice(slice, State.USED)
     }
 
     uncutSlice(slice) {
-        this.markSlice(State.FREE)
+        this.markSlice(slice, State.FREE)
     }
 
     markPoint(point, mark) {
@@ -55,13 +52,13 @@ class State {
     }
 
     skipPoint(point) {
-        this.skipped.push(point);
         this.all.push(point);
-        markPoint(point, State.SKIP)
+        this.skipped.push(point);
+        this.markPoint(point, State.SKIP)
     }
 
     unskipPoint(point) {
-        markPoint(point, State.FREE)
+        this.markPoint(point, State.FREE)
     }
 
     back(steps = 1) {
@@ -113,6 +110,6 @@ class State {
 
 State.FREE = 0;
 State.USED = 1;
-State.SKIP = 2;
+State.SKIP = 8;
 
 module.exports = State;

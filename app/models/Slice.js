@@ -1,3 +1,6 @@
+const Point = require('./Point');
+const Field = require('./Field');
+
 class Slice {
     constructor(data) {
         Object.assign(this, data);
@@ -34,7 +37,7 @@ class Slice {
 
         for (let rI = start.r, R = finish.r; rI <= R; rI++) {
             for (let cI = start.c, C = finish.c; cI <= C; cI++) {
-                yield position;
+                yield new Point(rI, cI);
             }
         }
     }

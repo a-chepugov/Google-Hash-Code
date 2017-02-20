@@ -26,17 +26,32 @@ async function index() {
 
     let state = pizza.createState();
 
-
-    console.log(`index.js(index):28 ========== ${state}`);
-    state.setCellState(1, 1, 2);
-    state.setCellState(1, 3, 1);
-    state.setCellState(3, 3, 1);
-    state.setCellState(4, 2, 2);
     console.log(`index.js(index):28 ========== ${state}`);
 
     for (let point of state) {
-        console.log(`${point}`);
+        let field = pizza.fieldForSlice(point);
+        // let field = new Field (pizza, point);
+        let slicesAll = Slice.createSlices(field, point);
+
+        let slices =
+                slicesAll
+                    .filter((item) => item.isEnoughItems(L))
+            ;
+
+        slices.forEach((item, index) => item.setNumber(index));
+
+        let [slice] = slices;
+
+        if(slice instanceof Slice) {
+            state.cutSlice(slice)
+        } else {
+            state.skipPoint(point);
+        }
+
+        console.log(`index.js(index):28 ========== ${state}`);
     }
+
+    console.log(`index.js(index):28 ========== ${state}`);
 
     console.time('slices tree');
 
@@ -55,7 +70,7 @@ async function index() {
                         .filter((item) => item.isEnoughItems(L))
                 ;
 
-            slices.forEach((item, index)=>item.setNumber(index))
+            slices.forEach((item, index) => item.setNumber(index));
 
             // for(let slice of slices) {
             //     console.log(`${slice}` + '\n========\n')
