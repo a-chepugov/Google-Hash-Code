@@ -1,5 +1,6 @@
 const Point = require('./Point');
 const Field = require('./Field');
+const Pizza = require('./Pizza');
 
 class Slice {
     constructor(data) {
@@ -51,7 +52,7 @@ class Slice {
     }
 
     toString() {
-        let string = `${this.points[0]} -> ${this.points[1]} =>> ${this.area}\n`;
+        let string = `${this.points[0]} -> ${this.points[1]} =>> ${this.area} : ${this.N}\n`;
         for (let row of this.cells) {
             string += (row.join(' | ') + '\n');
         }
@@ -59,7 +60,7 @@ class Slice {
     }
 }
 
-Slice.createSlices = function createSlices(field, pointStart) {
+Slice.createSlices = function (field, pointStart) {
     let cells = field.cells;
     let rMax = cells.length;
     let slices = [];
@@ -87,7 +88,24 @@ Slice.createSlices = function createSlices(field, pointStart) {
         }
     }
     return slices;
-}
+};
 
+Slice.createValidSlicesForPizzaPoint = function (pizza, point) {
+    let field = new Field(pizza, point);
+    let slicesAll = Slice.createSlices(field, point);
+
+    if (slicesAll.length) {
+        let {L} = pizza;
+        let slices =
+                slicesAll
+                    .filter((item) => item.isEnoughItems(L))
+            ;
+
+        slices.forEach((item, index) => item.setNumber(index));
+        return slices
+    } else {
+        return [];
+    }
+};
 
 module.exports = Slice;

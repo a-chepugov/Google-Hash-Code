@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-const Slice = require ('./Slice');
-const Cell = require ('./Cell');
-const Field = require ('./Field');
-const State = require ('./State');
+const Slice = require('./Slice');
+const Cell = require('./Cell');
+const Field = require('./Field');
+const State = require('./State');
 
 class Pizza {
     constructor(data) {
@@ -23,22 +23,22 @@ class Pizza {
         let cells = this.cells;
         for (let row of cells) {
             let rowString = row
-                .map(item => item.valueOf())
-                .join('') + '\n';
+                    .map(item => item.valueOf())
+                    .join('') + '\n';
             string += rowString;
         }
         return string;
     }
 }
 
-Pizza.createInstance = async function createInstance(file) {
+Pizza.createInstance = async function (file) {
     let promise = new Promise((s, f) => {
 
         fs.readFile(file, 'utf8', function (err, raw) {
             let lines = raw.split('\n');
 
             let dataProps = lines[0].split(' ');
-            for (let i = 0, l = dataProps.length; i < l; i ++) {
+            for (let i = 0, l = dataProps.length; i < l; i++) {
                 dataProps[i] = parseInt(dataProps[i]);
             }
 
@@ -47,7 +47,7 @@ Pizza.createInstance = async function createInstance(file) {
 
             for (let r = 0; r < R; r++) {
                 let lineIndex = r + 1;
-                let row = lines[lineIndex].split('').map((item, c)=> new Cell(r, c, item) );
+                let row = lines[lineIndex].split('').map((item, c) => new Cell(r, c, item));
                 cells.push(row);
             }
 

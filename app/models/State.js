@@ -64,7 +64,7 @@ class State {
     back(steps = 1) {
         for (let step = 0; step < steps; step++) {
             let item = this.all.pop();
-            if(item instanceof Point) {
+            if (item instanceof Point) {
                 this.skipped.pop();
                 this.unskipPoint(item);
             } else if (item instanceof Slice) {
@@ -109,7 +109,7 @@ class State {
 }
 
 State.FREE = 0;
-State.USED = 1;
-State.SKIP = 8;
+State.USED = 8;
+State.SKIP = 1;
 
 module.exports = State;
