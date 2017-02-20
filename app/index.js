@@ -8,7 +8,6 @@ const Slice = require('./models/Slice');
 const Point = require('./models/Point');
 const Field = require('./models/Field');
 
-
 exec("rm -rf ./cache", function (error, stdout, stderr) {
 });
 
@@ -20,8 +19,6 @@ async function index() {
     console.timeEnd('pizza');
     console.dir(`${pizza}`, {color: true, depth: null});
 
-    let {R, C, L} = pizza;
-
     let state = pizza.createState();
 
     console.log(`index.js(index):28 ========== ${state}`);
@@ -29,26 +26,28 @@ async function index() {
     console.time('cut');
 
     for (let point of state) {
-        console.time('cut item');
-
+        console.time(`cut ${point}`);
 
         let slices = Slice.createValidSlicesForPizzaPoint(pizza, point);
         let [slice] = slices;
 
-        if(slice instanceof Slice) {
+        if (slice instanceof Slice) {
             state.cutSlice(slice)
         } else {
             state.skipPoint(point);
         }
 
-        console.timeEnd('cut item');
-
-
+        console.timeEnd(`cut ${point}`);
         // console.log(`index.js(index):28 ========== ${state}`);
     }
     console.log(`index.js(index):28 ========== ${state}`);
 
     console.timeEnd('cut');
+
+    console.log('index.js(index):50 =>', state.getArea(), state.getSkippedArea());
+
+    // let q = state.forSave();
+    // console.log(q);
 
 }
 

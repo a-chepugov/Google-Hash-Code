@@ -58,6 +58,10 @@ class Slice {
         }
         return string;
     }
+
+    forSave() {
+        return `${this.points[0]} ${this.points[1]}`
+    }
 }
 
 Slice.createSlices = function (field, pointStart) {

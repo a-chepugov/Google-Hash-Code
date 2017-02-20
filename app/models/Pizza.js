@@ -10,10 +10,6 @@ class Pizza {
         Object.assign(this, data);
     }
 
-    fieldForSlice(point) {
-        return new Field(this, point);
-    }
-
     createState() {
         return new State(this.R, this.C)
     }

@@ -8,7 +8,7 @@ class State {
         const FREE = State.FREE;
 
         let cells = [];
-        for (let rI = this.R; rI--;) {
+        for (let r = this.R; r--;) {
             let row = Array(C).fill(FREE);
             cells.push(row)
         }
@@ -17,6 +17,14 @@ class State {
         this.cutted = [];
         this.skipped = [];
         this.all = [];
+    }
+
+    getArea() {
+        return this.R * this.C - this.skipped.length
+    }
+
+    getSkippedArea() {
+        return this.skipped.length
     }
 
     getCellState(r, c) {
@@ -81,10 +89,10 @@ class State {
         const FREE = State.FREE;
         let getCellState = this.getCellState.bind(this);
 
-        for (let rI = 0; rI < R; rI++) {
-            for (let cI = 0; cI < C; cI++) {
-                if (getCellState(rI, cI) === FREE) {
-                    let position = new Point(rI, cI);
+        for (let r = 0; r < R; r++) {
+            for (let c = 0; c < C; c++) {
+                if (getCellState(r, c) === FREE) {
+                    let position = new Point(r, c);
                     yield position;
                 }
             }
@@ -104,6 +112,17 @@ class State {
                     .join('') + '\n';
             string += rowString;
         }
+        return string;
+    }
+
+    forSave() {
+        let slices = this.cutted;
+        let string = `${slices.length}\n`;
+        for (let item of slices) {
+            let sliceLine = item.forSave() + '\n';
+            string += sliceLine;
+        }
+
         return string;
     }
 }
