@@ -25,6 +25,24 @@ class Slice {
         return false
     }
 
+    setNumber(N) {
+        this.N = N;
+    }
+
+    * iterate() {
+        let [start, finish] = this.points;
+
+        for (let rI = start.r, R = finish.r; rI <= R; rI++) {
+            for (let cI = start.c, C = finish.c; cI <= C; cI++) {
+                yield position;
+            }
+        }
+    }
+
+    [Symbol.iterator]() {
+        return this.iterate();
+    }
+
     valueOf() {
         return this.toString()
     }
@@ -49,20 +67,20 @@ Slice.createSlices = function createSlices(field, pointStart) {
 
         for (let curLength = maxLength + 1; --curLength;) {
 
-            let slice = [];
+            let sliceCells = [];
             for (let rowForSliceI = 0; rowForSliceI <= rI; rowForSliceI++) {
                 let rowForSlice = cells[rowForSliceI].slice(0, curLength);
-                slice.push(rowForSlice);
+                sliceCells.push(rowForSlice);
             }
 
-            let l = slice.length;
-            let r = slice[l - 1];
+            let l = sliceCells.length;
+            let r = sliceCells[l - 1];
             let lr = r.length;
             let pointFinish = (r[lr - 1]).toPoint();
 
             let area = (pointFinish.r - pointStart.r + 1) * (pointFinish.c - pointStart.c + 1);
-
-            slices.push(new Slice({points: [pointStart, pointFinish], cells: slice, area}))
+            let slice = new Slice({points: [pointStart, pointFinish], cells: sliceCells, area});
+            slices.push(slice)
         }
     }
     return slices;

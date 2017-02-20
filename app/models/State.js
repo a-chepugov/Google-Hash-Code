@@ -1,4 +1,5 @@
 const Point = require('./Point');
+const Slice = require('./Slice');
 
 class State {
     constructor(R, C) {
@@ -15,6 +16,8 @@ class State {
 
         // @todo размещать отрезанные и пропущенные куски
         this.cutted = [];
+        this.skipped = [];
+        this.all = [];
     }
 
     getCellState(r, c) {
@@ -25,8 +28,56 @@ class State {
         this.cells[r][c] = value;
     }
 
+    markSlice(slice, mark) {
+        let setCellState = this.setCellState.bind(this);
 
-    * iterateField() {
+        for (let point of slice) {
+            let {r, c} = point;
+            setCellState(r, c, mark);
+        }
+    }
+
+    cutSlice(slice) {
+        this.cutted.push(slice);
+        this.all.push(slice);
+
+        this.markSlice(State.USED)
+    }
+
+    uncutSlice(slice) {
+        this.markSlice(State.FREE)
+    }
+
+    markPoint(point, mark) {
+        let setCellState = this.setCellState.bind(this);
+        let {r, c} = point;
+        setCellState(r, c, mark);
+    }
+
+    skipPoint(point) {
+        this.skipped.push(point);
+        this.all.push(point);
+        markPoint(point, State.SKIP)
+    }
+
+    unskipPoint(point) {
+        markPoint(point, State.FREE)
+    }
+
+    back(steps = 1) {
+        for (let step = 0; step < steps; step++) {
+            let item = this.all.pop();
+            if(item instanceof Point) {
+                this.skipped.pop();
+                this.unskipPoint(item);
+            } else if (item instanceof Slice) {
+                this.cutted.pop();
+                this.uncutSlice(item);
+            }
+        }
+    }
+
+    * iterate() {
         let position = new Point(0, 0);
         const R = this.R;
         const C = this.C;
@@ -41,12 +92,10 @@ class State {
                 }
             }
         }
-
-        return;
     }
 
     [Symbol.iterator]() {
-        return this.iterateField();
+        return this.iterate();
     }
 
     toString() {

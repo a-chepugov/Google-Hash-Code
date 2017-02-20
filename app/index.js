@@ -28,19 +28,15 @@ async function index() {
 
 
     console.log(`index.js(index):28 ========== ${state}`);
-    state.setCellState(1,1, 2);
-    state.setCellState(1,3, 1);
-    state.setCellState(3,3, 1);
-    state.setCellState(4,2, 2);
+    state.setCellState(1, 1, 2);
+    state.setCellState(1, 3, 1);
+    state.setCellState(3, 3, 1);
+    state.setCellState(4, 2, 2);
     console.log(`index.js(index):28 ========== ${state}`);
 
-    for(let point of state) {
-        // console.log(`${point}`);
-        console.dir(point, {color: true, depth: null});
-
+    for (let point of state) {
+        console.log(`${point}`);
     }
-
-
 
     console.time('slices tree');
 
@@ -54,7 +50,13 @@ async function index() {
 
             let slicesAll = Slice.createSlices(field, point);
 
-            let slices = slicesAll.filter((item) => item.isEnoughItems(L));
+            let slices =
+                    slicesAll
+                        .filter((item) => item.isEnoughItems(L))
+                ;
+
+            slices.forEach((item, index)=>item.setNumber(index))
+
             // for(let slice of slices) {
             //     console.log(`${slice}` + '\n========\n')
             // }
