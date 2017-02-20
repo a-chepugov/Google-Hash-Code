@@ -22,6 +22,8 @@ async function index() {
 
     let {R, C, L} = pizza;
 
+    console.time(1);
+
     for (let r = 0; r < R; r++) {
         for (let c = 0; c < C; c++) {
             let point = new Point(r, c);
@@ -29,20 +31,20 @@ async function index() {
             // console.dir(field.toString(), {color: true, depth: null});
 
             let slicesAll = Slice.createSlices(field, point);
-            // console.dir(slicesAll, {color: true, depth: null});
             // for(let slice of slicesAll) {
             //     console.log(slice.toString())
             // }
 
-            // let slices = slicesAll.filter((item) => isValidSlice(item, L));
             let slices = slicesAll.filter((item) => item.isEnoughItems(L));
             // for(let slice of slices) {
             //     console.log(slice.toString())
             // }
 
-            // console.log('index.js:30', slicesAll.length, slices.length);
+            console.log('index.js:30', slicesAll.length, slices.length);
         }
     }
+
+    console.timeEnd(1);
 }
 
 module.exports = index;

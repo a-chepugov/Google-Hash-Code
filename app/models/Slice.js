@@ -1,5 +1,3 @@
-const Point = require('./Cell');
-
 class Slice {
     constructor(data) {
         Object.assign(this, data);
@@ -60,9 +58,9 @@ Slice.createSlices = function createSlices(field, point) {
             let r = slice[l - 1];
             let lr = r.length;
 
-            let point2 = r[lr -1];
+            let point2 = r[lr - 1];
 
-            console.log('Slice.js:60',l,lr, point, point2);
+            // console.log('Slice.js:60', l, lr, point, point2);
 
 
             slices.push(new Slice({point, cells: slice}))
