@@ -16,34 +16,53 @@ exec("rm -rf ./cache", function (error, stdout, stderr) {
 
 async function index() {
     let file = config.file;
+
+    console.time('pizza');
     let pizza = await Pizza.createInstance(file);
-    // console.dir(pizza, {color: true, depth: null});
+    console.timeEnd('pizza');
+    console.dir(`${pizza}`, {color: true, depth: null});
 
     let {R, C, L} = pizza;
 
-    console.time(1);
+    let state = pizza.createState();
+
+
+    console.log(`index.js(index):28 ========== ${state}`);
+    state.setCellState(1,1, 2);
+    state.setCellState(1,3, 1);
+    state.setCellState(3,3, 1);
+    state.setCellState(4,2, 2);
+    console.log(`index.js(index):28 ========== ${state}`);
+
+    for(let point of state) {
+        console.log(`${point}`);
+    }
+
+
+
+    console.time('slices tree');
 
     for (let r = 0; r < R; r++) {
         for (let c = 0; c < C; c++) {
+
+            // console.time('slice');
             let point = new Point(r, c);
             let field = pizza.fieldForSlice(point);
-            // console.dir(field.toString(), {color: true, depth: null});
+            // console.log(`${field}`);
 
             let slicesAll = Slice.createSlices(field, point);
-            // for(let slice of slicesAll) {
-            //     console.log(slice.toString())
-            // }
 
             let slices = slicesAll.filter((item) => item.isEnoughItems(L));
             // for(let slice of slices) {
-                // console.log(slice.toString() + '\n========\n')
+            //     console.log(`${slice}` + '\n========\n')
             // }
+            // console.timeEnd('slice');
 
-            // console.log('index.js:30', slicesAll.length, slices.length);
+            // console.log('index.js:30', `(${point})`, slicesAll.length, slices.length);
         }
     }
 
-    console.timeEnd(1);
+    console.timeEnd('slices tree');
 }
 
 module.exports = index;
