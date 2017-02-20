@@ -35,7 +35,9 @@ async function index() {
     console.log(`index.js(index):28 ========== ${state}`);
 
     for(let point of state) {
-        console.log(`${point}`);
+        // console.log(`${point}`);
+        console.dir(point, {color: true, depth: null});
+
     }
 
 

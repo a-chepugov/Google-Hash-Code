@@ -25,59 +25,28 @@ class State {
         this.cells[r][c] = value;
     }
 
-    [Symbol.iterator]() {
-        return {
-            position: new Point(0, -1),
-            R: this.R,
-            C: this.C,
-            getCellState: this.getCellState.bind(this),
 
-            next() {
-                let FREE = State.FREE;
-                let {
-                    R, C,
-                    position: {r, c}
-                } = this;
+    * iterateField() {
+        let position = new Point(0, 0);
+        const R = this.R;
+        const C = this.C;
+        const FREE = State.FREE;
+        let getCellState = this.getCellState.bind(this);
 
-                c++;
-                for (let rI = r; rI < R; rI++) {
-                    for (let cI = c; cI < C; cI++) {
-                        if (this.getCellState(rI, cI) === FREE) {
-                            let position = new Point(rI, cI);
-                            this.position = position;
-                            return {
-                                done: false,
-                                value: position
-                            };
-                        }
-                    }
-                    c = -1;
-                }
-
-                // let rI = r, cI = c;
-
-                // do {
-                //     do {
-                //         if (this.getCellState(rI, cI) === FREE) {
-                //             let position = new Point(rI, cI);
-                //             this.position = position;
-                //             return {
-                //                 done: false,
-                //                 value: position
-                //             };
-                //         }
-                //         cI++
-                //     } while (cI < C);
-                //     cI = 0;
-                //     rI++
-                //
-                // } while (rI < R);
-
-                return {
-                    done: true
+        for (let rI = 0; rI < R; rI++) {
+            for (let cI = 0; cI < C; cI++) {
+                if (getCellState(rI, cI) === FREE) {
+                    let position = new Point(rI, cI);
+                    yield position;
                 }
             }
         }
+
+        return;
+    }
+
+    [Symbol.iterator]() {
+        return this.iterateField();
     }
 
     toString() {
