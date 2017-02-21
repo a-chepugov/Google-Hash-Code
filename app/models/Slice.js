@@ -29,29 +29,29 @@ class Slice {
         return false
     }
 
-    get area(){
+    get area() {
         let [{r: r1, c: c1} = {}, {r: r2, c: c2} = {}] = this.points;
         let area = (r2 - r1 + 1) * (c2 - c1 + 1);
         return area;
     }
 
     getPoint(N) {
-        if(!this._inOneRow) {
-            this._inOneRow = this.cells.reduce((result, row)=>{
+        if (!this._inOneRow) {
+            this._inOneRow = this.cells.reduce((result, row) => {
                 return result.concat(row);
-            }, [] );
+            }, []);
         }
         let inOneRow = this._inOneRow;
 
         return (
-            N < 0? inOneRow[inOneRow.length  + N] : inOneRow[N]
+            N < 0 ? inOneRow[inOneRow.length + N] : inOneRow[N]
         )
     }
 
     getRow(N) {
         let cells = this.cells;
         return (
-            N < 0? cells[cells .length  + N] : cells[N]
+            N < 0 ? cells[cells.length + N] : cells[N]
         )
     }
 
@@ -64,6 +64,14 @@ class Slice {
 
     setNumber(N) {
         this.N = N;
+    }
+
+    set N(N) {
+        this._N = N;
+    }
+
+    get N() {
+        return this._N
     }
 
     * iterate() {
@@ -133,7 +141,10 @@ Slice.createValidSlicesForPizzaPoint = function (pizza, point) {
                     .filter((item) => item.isEnoughItems(L))
             ;
 
-        slices.forEach((item, index) => item.setNumber(index));
+        slices.forEach((item, index, items) => {
+            item.N = items.length - index - 1
+        });
+
         return slices
     } else {
         return [];

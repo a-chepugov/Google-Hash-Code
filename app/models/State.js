@@ -94,14 +94,26 @@ class State {
     }
 
     back(steps = 1) {
+        let chunks = [];
         for (let step = 0; step < steps; step++) {
             let item = this.all.pop();
+            chunks.push(item);
             if (item instanceof Point) {
                 this.skipped.pop();
                 this.unskipPoint(item);
             } else if (item instanceof Slice) {
                 this.cutted.pop();
                 this.uncutSlice(item);
+            }
+        }
+        return chunks;
+    }
+
+    backToNearestSlice() {
+        while(this.cutted.length) {
+            let [item] = this.back();
+            if (item instanceof Slice) {
+                return item
             }
         }
     }
@@ -121,6 +133,33 @@ class State {
                 }
             }
         }
+    }
+
+    * getAnotherSet() {
+        console.log(`State.js(getAnotherSet):139 => `,`${this}`);
+
+        console.time('cut');
+
+        for (let point of this) {
+            console.time(`cut ${point}`);
+
+            let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
+
+
+            let [slice] = slices;
+
+            if (slice instanceof Slice) {
+                let is = state.isCuttable(slice);
+                if(state.isCuttable(slice)) {
+                    state.cutSlice(slice)
+                }
+            } else {
+                state.skipPoint(point);
+            }
+        }
+
+        console.timeEnd(`cut ${point}`);
+        // console.log(`State.js(getAnotherSet):162 ==========`, `${this}`);
     }
 
     [Symbol.iterator]() {
