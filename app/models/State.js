@@ -19,12 +19,22 @@ class State {
         this.all = [];
     }
 
-    getArea() {
-        return this.R * this.C - this.skipped.length
+    get area() {
+        return this.R * this.C
     }
 
-    getSkippedArea() {
+    get cuttedArea() {
+        return this.cutted.reduce((result, item) =>{
+            return result + item.area
+        }, 0 )
+    }
+
+    get skippedArea() {
         return this.skipped.length
+    }
+
+    get freeArea() {
+        return this.area - (this.cuttedArea + this.skippedArea)
     }
 
     getCellState(r, c) {
@@ -33,6 +43,20 @@ class State {
 
     setCellState(r, c, value) {
         this.cells[r][c] = value;
+    }
+
+
+    isCuttable(slice) {
+        let row = slice.getRow(0);
+        const FREE = State.FREE;
+
+        for(let point of row) {
+            let state = this.getCellState(point.r, point.c);
+            if(state !== FREE) {
+                return false;
+            }
+        }
+        return true;
     }
 
     markSlice(slice, mark) {

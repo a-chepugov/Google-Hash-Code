@@ -19,8 +19,11 @@ class Field {
             }
             fieldCells.push(row);
         }
-        this.point = point;
         this.cells = fieldCells;
+    }
+
+    get point() {
+        return this.cells[0][0]
     }
 
     valueOf() {

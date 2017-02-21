@@ -21,7 +21,7 @@ async function index() {
 
     let state = pizza.createState();
 
-    console.log(`index.js(index):28 ========== ${state}`);
+    console.log(`index.js(index):24 ========== ${state}`);
 
     console.time('cut');
 
@@ -32,7 +32,10 @@ async function index() {
         let [slice] = slices;
 
         if (slice instanceof Slice) {
-            state.cutSlice(slice)
+            let is = state.isCuttable(slice);
+            if(state.isCuttable(slice)) {
+                state.cutSlice(slice)
+            }
         } else {
             state.skipPoint(point);
         }
@@ -40,11 +43,11 @@ async function index() {
         console.timeEnd(`cut ${point}`);
         // console.log(`index.js(index):28 ========== ${state}`);
     }
-    console.log(`index.js(index):28 ========== ${state}`);
+    console.log(`index.js(index):46 ========== ${state}`);
 
     console.timeEnd('cut');
 
-    console.log('index.js(index):50 =>', state.getArea(), state.getSkippedArea());
+    console.log('index.js(index):50 =>', state.area, state.cuttedArea, state.skippedArea, state.freeArea);
 
     // let q = state.forSave();
     // console.log(q);
