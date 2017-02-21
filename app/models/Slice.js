@@ -3,8 +3,8 @@ const Field = require('./Field');
 const Pizza = require('./Pizza');
 
 class Slice {
-    constructor(data) {
-        Object.assign(this, data);
+    constructor({cells}) {
+        this.cells = cells;
     }
 
     isEnoughItems(L) {
@@ -29,12 +29,36 @@ class Slice {
         return false
     }
 
+    get area(){
+        let [{r: r1, c: c1} = {}, {r: r2, c: c2} = {}] = this.points;
+        let area = (r2 - r1 + 1) * (c2 - c1 + 1);
+        return area;
+    }
+
+    getPoint(N) {
+        let inOneRow = this.cells.reduce((result, row)=>{
+            return result.concat(row);
+        }, [] );
+
+        return (
+            N < 0? inOneRow[inOneRow.length  + N] : inOneRow[N]
+        )
+    }
+
+    get points() {
+        let start = this.getPoint(0);
+        let finish = this.getPoint(-1);
+
+        return [this.getPoint(0), this.getPoint(-1)]
+    }
+
     setNumber(N) {
         this.N = N;
     }
 
     * iterate() {
-        let [start, finish] = this.points;
+        let points = this.points;
+        let [start, finish] = points;
 
         for (let rI = start.r, R = finish.r; rI <= R; rI++) {
             for (let cI = start.c, C = finish.c; cI <= C; cI++) {
@@ -81,13 +105,7 @@ Slice.createSlices = function (field, pointStart) {
                 sliceCells.push(rowForSlice);
             }
 
-            let l = sliceCells.length;
-            let r = sliceCells[l - 1];
-            let lr = r.length;
-            let pointFinish = (r[lr - 1]).toPoint();
-
-            let area = (pointFinish.r - pointStart.r + 1) * (pointFinish.c - pointStart.c + 1);
-            let slice = new Slice({points: [pointStart, pointFinish], cells: sliceCells, area});
+            let slice = new Slice({cells: sliceCells});
             slices.push(slice)
         }
     }
