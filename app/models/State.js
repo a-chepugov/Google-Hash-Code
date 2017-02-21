@@ -116,11 +116,13 @@ class State {
         return chunks;
     }
 
-    backToNearestSlice() {
-        while (this.cutted.length) {
+    changeLastSlice() {
+        while (this.all.length) {
             let [item] = this.back();
             if (item instanceof Slice) {
-                return item
+                let {points: {0: point}, N} = item;
+                let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
+                return item;
             }
         }
     }
@@ -180,6 +182,7 @@ class State {
 
             yield this;
 
+            this.changeLastSlice();
 
         } while (false);
 
