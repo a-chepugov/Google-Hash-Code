@@ -145,33 +145,44 @@ class State {
     * getAnotherSet() {
         console.log(`State.js(getAnotherSet):139 => `, `${this}`);
 
-        console.time('cut');
+        do {
+            console.time('cut');
 
-        for (let point of this.nextFreePoint()) {
-            console.time(`cut ${point}`);
+            for (let point of this.nextFreePoint()) {
+                console.time(`cut ${point}`);
 
-            let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
-            if (slices.length) {
-                for (let slice of slices) {
-                    let is = this.isCuttable(slice);
-                    if (this.isCuttable(slice)) {
-                        this.cutSlice(slice)
-                        break;
-                    } else {
-                        continue;
+                let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
+                if (slices.length) {
+                    for (let i = 0, l = slices.length; i < l; i++) {
+                        let slice = slices[i];
+                        let is = this.isCuttable(slice);
+                        if (this.isCuttable(slice)) {
+                            this.cutSlice(slice);
+                            break;
+                        } else {
+                            if (i < l - 1) {
+                                continue;
+                            } else {
+                                this.skipPoint(point);
+                            }
+                        }
                     }
+                } else {
+                    this.skipPoint(point);
                 }
-            } else {
-                this.skipPoint(point);
+
+                console.timeEnd(`cut ${point}`);
             }
 
-            console.timeEnd(`cut ${point}`);
-        }
+            console.log(`State.js(getAnotherSet):172 ==========`, `${this}`);
 
-        yield this;
+            console.timeEnd('cut');
+
+            yield this;
 
 
-        console.log(`State.js(getAnotherSet):162 ==========`, `${this}`);
+        } while (false);
+
     }
 
     [Symbol.iterator]() {
