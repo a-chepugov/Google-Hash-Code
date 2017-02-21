@@ -47,7 +47,7 @@ async function index() {
 
     console.timeEnd('cut');
 
-    console.log('index.js(index):50 =>', state.area, state.cuttedArea, state.skippedArea, state.freeArea);
+    console.log('index.js(index):50 =>', state.area, state.areaCutted, state.areaSkipped, state.areaFree);
 
     // let q = state.forSave();
     // console.log(q);

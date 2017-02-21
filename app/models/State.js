@@ -23,18 +23,18 @@ class State {
         return this.R * this.C
     }
 
-    get cuttedArea() {
+    get areaCutted() {
         return this.cutted.reduce((result, item) =>{
             return result + item.area
         }, 0 )
     }
 
-    get skippedArea() {
+    get areaSkipped() {
         return this.skipped.length
     }
 
-    get freeArea() {
-        return this.area - (this.cuttedArea + this.skippedArea)
+    get areaFree() {
+        return this.area - (this.areaCutted + this.areaSkipped)
     }
 
     getCellState(r, c) {
