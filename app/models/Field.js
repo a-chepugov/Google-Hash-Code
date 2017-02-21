@@ -1,3 +1,5 @@
+const Slice = require('./Slice');
+
 class Field {
     constructor(pizza, point) {
         let fieldCells = [];
@@ -42,6 +44,30 @@ class Field {
         }
         return string;
     }
+
+    createSlices() {
+        let cells = this.cells;
+        let rMax = cells.length;
+        let slices = [];
+
+        for (let rI = 0; rI < rMax; rI++) {
+            let rowCurrent = cells[rI];
+            let maxLength = rowCurrent.length;
+
+            for (let curLength = maxLength + 1; --curLength;) {
+
+                let sliceCells = [];
+                for (let rowForSliceI = 0; rowForSliceI <= rI; rowForSliceI++) {
+                    let rowForSlice = cells[rowForSliceI].slice(0, curLength);
+                    sliceCells.push(rowForSlice);
+                }
+
+                let slice = new Slice({cells: sliceCells});
+                slices.push(slice)
+            }
+        }
+        return slices;
+    };
 }
 
 module.exports = Field;

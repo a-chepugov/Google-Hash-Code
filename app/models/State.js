@@ -121,7 +121,7 @@ class State {
             let [item] = this.back();
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
-                let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
+                let slices = this.pizza.createValidSlicesForPizzaPoint(point);
                 return item;
             }
         }
@@ -153,7 +153,7 @@ class State {
             for (let point of this.nextFreePoint()) {
                 console.time(`cut ${point}`);
 
-                let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
+                let slices = this.pizza.createValidSlicesForPizzaPoint(point);
                 if (slices.length) {
                     for (let i = 0, l = slices.length; i < l; i++) {
                         let slice = slices[i];

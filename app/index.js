@@ -4,9 +4,6 @@ const config = require('config');
 const exec = require('child_process').exec;
 
 const Pizza = require('./models/Pizza');
-const Slice = require('./models/Slice');
-const Point = require('./models/Point');
-const Field = require('./models/Field');
 
 exec("rm -rf ./cache", function (error, stdout, stderr) {
 });

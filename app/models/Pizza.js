@@ -1,8 +1,8 @@
 const fs = require('fs');
 
-const Slice = require('./Slice');
 const Cell = require('./Cell');
 const Field = require('./Field');
+const Slice = require('./Slice');
 const State = require('./State');
 
 class Pizza {
@@ -24,6 +24,27 @@ class Pizza {
             string += rowString;
         }
         return string;
+    }
+
+    createValidSlicesForPizzaPoint(point) {
+        let field = new Field(this, point);
+        let slicesAll = field.createSlices(point);
+
+        if (slicesAll.length) {
+            let {L} = this;
+            let slices =
+                    slicesAll
+                        .filter((item) => item.isEnoughItems(L))
+                ;
+
+            slices.forEach((item, index, items) => {
+                item.N = items.length - index - 1
+            });
+
+            return slices
+        } else {
+            return [];
+        }
     }
 }
 
