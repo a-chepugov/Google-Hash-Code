@@ -52,7 +52,6 @@ class State {
         this.cells[r][c] = value;
     }
 
-
     isCuttable(slice) {
         let row = slice.getRow(0);
         const FREE = State.FREE;
@@ -74,14 +73,8 @@ class State {
         }
     }
 
-    cutSlice(slice) {
-        this.all.push(slice);
-        this.cutted.push(slice);
-        this.markSlice(slice, State.USED)
-    }
-
-    uncutSlice(slice) {
-        this.markSlice(slice, State.FREE)
+    cutSlice(item) {
+        this.cutItem(item);
     }
 
     markPoint(point, mark) {
@@ -90,42 +83,69 @@ class State {
         setCellState(r, c, mark);
     }
 
-    skipPoint(point) {
-        this.all.push(point);
-        this.skipped.push(point);
-        this.markPoint(point, State.SKIP)
+    skipPoint(item) {
+        this.cutItem(item);
     }
 
-    unskipPoint(point) {
-        this.markPoint(point, State.FREE)
+    cutItem(item) {
+        // console.log('State.js(cutItem):91 =>', item instanceof Point);
+        // console.log('State.js(cutItem):91 =>', item instanceof Slice);
+        // console.log('State.js(cutItem):91 =>', item.constructor.name);
+
+        if (item instanceof Point) {
+            this.all.push(item);
+            this.skipped.push(item);
+            this.markPoint(item, State.SKIP)
+        } else if (item instanceof Slice) {
+            this.all.push(item);
+            this.cutted.push(item);
+            this.markSlice(item, State.USED)
+        }
+    }
+
+    uncutItem() {
+        let item = this.all.pop();
+        if (item instanceof Point) {
+            this.skipped.pop();
+            this.markPoint(item, State.FREE)
+        } else {
+            this.cutted.pop();
+            this.markSlice(item, State.FREE)
+        }
+
+        return item
     }
 
     back(steps = 1) {
         let chunks = [];
         for (let step = 0; step < steps; step++) {
-            let item = this.all.pop();
+            let item = this.uncutItem();
             chunks.push(item);
-            if (item instanceof Point) {
-                this.skipped.pop();
-                this.unskipPoint(item);
-            } else if (item instanceof Slice) {
-                this.cutted.pop();
-                this.uncutSlice(item);
-            }
         }
         return chunks;
     }
 
     changeLastSlice() {
-        while (this.all.length) {
-            let [item] = this.back();
+        while (this.cutted.length) {
+            // console.log('State.js(changeLastSlice):134 =>', `${this}`);
 
+            let q = `${this}`;
+
+            // console.log('State.js(changeLastSlice):140 =>', `${this}`);
+            let [item] = this.back();
 
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
 
                 let slices = this.pizza.createValidSlicesForPizzaPoint(point);
+                // console.log('State.js(changeLastSlice):134 =>', `${this}`);
+
+
+                // console.log('State.js(changeLastSlice):152 =>', q);
+
                 this.fillPosition(point, N + 1);
+                // console.log('State.js(changeLastSlice):158 =>', `${this}`);
+
                 return item;
             }
         }
@@ -134,8 +154,12 @@ class State {
 
     fillPosition(point, N) {
         let slices = this.pizza.createValidSlicesForPizzaPoint(point);
+
         if (N) {
+            // console.log('State.js(fillPosition):148 =>', N);
+            // console.log('State.js(fillPosition):150 =>', slices.length);
             slices = slices.slice(N);
+            // console.log('State.js(fillPosition):150 =>', slices.length);
         }
         if (slices.length) {
             for (let i = 0, l = slices.length; i < l; i++) {
@@ -153,8 +177,37 @@ class State {
                 }
             }
         } else {
+            // console.log('State.js(fillPosition):170 =>', `${point}`);
             this.skipPoint(point);
         }
+
+        // console.log('State.js(fillPosition):157 =>',`${this}`);
+
+    }
+
+    * getAnotherSet() {
+        let go = false;
+        let it = 10;
+
+        do {
+
+            // it--;
+            // if (!it) break
+
+            for (let point of this.nextFreePoint()) {
+                // console.log('State.js(getAnotherSet):180 =>', `${point}`);
+
+                this.fillPosition(point)
+            }
+            yield this;
+
+            go = this.changeLastSlice();
+        } while (go);
+
+    }
+
+    [Symbol.iterator]() {
+        return this.getAnotherSet();
     }
 
     * nextFreePoint() {
@@ -172,26 +225,6 @@ class State {
                 }
             }
         }
-    }
-
-    * getAnotherSet() {
-        let go = false;
-        do {
-
-            for (let point of this.nextFreePoint()) {
-                this.fillPosition(point)
-            }
-            console.log('State.js(getAnotherSet):190 =>',`${this}`);
-
-            yield this;
-
-            go = this.changeLastSlice();
-        } while (go);
-
-    }
-
-    [Symbol.iterator]() {
-        return this.getAnotherSet();
     }
 
     toString() {

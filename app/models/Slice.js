@@ -33,7 +33,7 @@ class Slice {
         return area;
     }
 
-    getPoint(N) {
+    getCell(N) {
         if (!this._inOneRow) {
             this._inOneRow = this.cells.reduce((result, row) => {
                 return result.concat(row);
@@ -54,10 +54,10 @@ class Slice {
     }
 
     get points() {
-        let start = this.getPoint(0);
-        let finish = this.getPoint(-1);
+        let start = this.getCell(0).toPoint();
+        let finish = this.getCell(-1).toPoint();
 
-        return [this.getPoint(0), this.getPoint(-1)]
+        return [this.getCell(0).toPoint(), this.getCell(-1).toPoint()]
     }
 
     setNumber(N) {

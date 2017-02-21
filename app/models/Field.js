@@ -25,7 +25,7 @@ class Field {
     }
 
     get point() {
-        return this.cells[0][0]
+        return this.cells[0][0].toPoint();
     }
 
     valueOf() {
