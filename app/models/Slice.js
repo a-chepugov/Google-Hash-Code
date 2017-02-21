@@ -60,18 +60,6 @@ class Slice {
         return [this.getPoint(0), this.getPoint(-1)]
     }
 
-    setNumber(N) {
-        this.N = N;
-    }
-
-    set N(N) {
-        this._N = N;
-    }
-
-    get N() {
-        return this._N
-    }
-
     * iterate() {
         let points = this.points;
         let [start, finish] = points;

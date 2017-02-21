@@ -83,13 +83,20 @@ class Field {
         ;
 
         slices.forEach((item, index, items) => {
-            item.N = items.length - index - 1
+            item.N = items.length - index - 1;
         });
+
+        // slices = slices.reverse();
 
         return slices;
     }
 
     * nextSlice() {
+        for (let item of this.slices) {
+            console.log(`Field.js(nextSlice):98 => `,item.N);
+        }
+
+
         let slices = this.slices;
         for (let slice of slices) {
             yield slice

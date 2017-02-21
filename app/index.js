@@ -18,15 +18,14 @@ async function index() {
 
     let state = pizza.createState();
 
+    console.time('all cuts');
     for (let set of state) {
-
         console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
-
         // let q = set.forSave();
         // console.log(q);
     }
 
-
+    console.timeEnd('all cuts');
 }
 
 module.exports = index;
