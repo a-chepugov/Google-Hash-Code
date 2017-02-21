@@ -186,23 +186,28 @@ class State {
     }
 
     * getAnotherSet() {
-        let go = false;
-        let it = 10;
+        let skipped = this.area;
 
         do {
 
-            // it--;
-            // if (!it) break
-
             for (let point of this.nextFreePoint()) {
                 // console.log('State.js(getAnotherSet):180 =>', `${point}`);
-
-                this.fillPosition(point)
+                this.fillPosition(point);
+                if (skipped <= this.areaSkipped) {
+                    break;
+                }
             }
-            yield this;
 
-            go = this.changeLastSlice();
-        } while (go);
+            if (skipped > this.areaSkipped) {
+                skipped = this.areaSkipped;
+                yield this;
+            }
+
+            if (this.areaSkipped === 0) {
+                break
+            }
+
+        } while (this.changeLastSlice());
 
     }
 
