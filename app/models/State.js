@@ -1,5 +1,7 @@
 const Point = require('./Point');
+const Cell = require('./Cell');
 const Slice = require('./Slice');
+const Field = require('./Field');
 
 class State {
     constructor(pizza) {
@@ -7,8 +9,12 @@ class State {
         const FREE = State.FREE;
 
         let cells = [];
-        for (let r = this.R; r--;) {
-            let row = Array(this.C).fill(FREE);
+        for (let r = 0, R = this.R; r < R; r++) {
+            let row = [];
+            for (let c = 0, C = this.C; c < C; c++) {
+                let cell = new Cell(r, c, FREE);
+                row.push(cell)
+            }
             cells.push(row)
         }
         this.cells = cells;
@@ -44,12 +50,16 @@ class State {
         return this.area - (this.areaCutted + this.areaSkipped)
     }
 
-    getCellState(r, c) {
+    getCell(r, c) {
         return this.cells[r][c]
     }
 
+    getCellState(r, c) {
+        return this.cells[r][c].value
+    }
+
     setCellState(r, c, value) {
-        this.cells[r][c] = value;
+        this.cells[r][c].value = value;
     }
 
     isCuttable(slice) {
@@ -88,10 +98,6 @@ class State {
     }
 
     cutItem(item) {
-        // console.log('State.js(cutItem):91 =>', item instanceof Point);
-        // console.log('State.js(cutItem):91 =>', item instanceof Slice);
-        // console.log('State.js(cutItem):91 =>', item.constructor.name);
-
         if (item instanceof Point) {
             this.all.push(item);
             this.skipped.push(item);
@@ -127,21 +133,10 @@ class State {
 
     changeLastSlice() {
         while (this.cutted.length) {
-            // console.log('State.js(changeLastSlice):134 =>', `${this}`);
-
-            let q = `${this}`;
-
-            // console.log('State.js(changeLastSlice):140 =>', `${this}`);
             let [item] = this.back();
-
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
-
-                // console.log('State.js(changeLastSlice):152 =>', q);
-
                 this.fillPosition(point, N + 1);
-                // console.log('State.js(changeLastSlice):158 =>', `${this}`);
-
                 return item;
             }
         }
@@ -149,14 +144,11 @@ class State {
 
 
     fillPosition(point, N) {
-        let field = this.pizza.createFieldForPoint(point);
+        let field = this.createFieldForPoint(point);
         let slices = field.slices;
 
         if (N) {
-            // console.log('State.js(fillPosition):148 =>', N);
-            // console.log('State.js(fillPosition):150 =>', slices.length);
             slices = slices.slice(N);
-            // console.log('State.js(fillPosition):150 =>', slices.length);
         }
         if (slices.length) {
             for (let i = 0, l = slices.length; i < l; i++) {
@@ -174,12 +166,8 @@ class State {
                 }
             }
         } else {
-            // console.log('State.js(fillPosition):170 =>', `${point}`);
             this.skipPoint(point);
         }
-
-        // console.log('State.js(fillPosition):157 =>',`${this}`);
-
     }
 
     * getAnotherSet() {
@@ -188,7 +176,6 @@ class State {
         do {
 
             for (let point of this.nextFreePoint()) {
-                // console.log('State.js(getAnotherSet):180 =>', `${point}`);
                 this.fillPosition(point);
                 if (skipped <= this.areaSkipped) {
                     break;
@@ -218,11 +205,12 @@ class State {
         const C = this.C;
         const FREE = State.FREE;
         let getCellState = this.getCellState.bind(this);
+        let getCell = this.getCell.bind(this);
 
         for (let r = 0; r < R; r++) {
             for (let c = 0; c < C; c++) {
                 if (getCellState(r, c) === FREE) {
-                    let position = new Point(r, c);
+                    let position = getCell(r, c);
                     yield position;
                 }
             }
@@ -234,7 +222,9 @@ class State {
         let cells = this.cells;
         for (let row of cells) {
             let rowString = row
-                    .map(item => item.valueOf())
+                    .map(item => {
+                        return item.valueOf()
+                    })
                     .join('') + '\n';
             string += rowString;
         }
@@ -251,10 +241,27 @@ class State {
 
         return string;
     }
+
+    createFieldForPoint(point) {
+        let Fields = State.Fields;
+        let field = Fields.get(point);
+        if (!field) {
+            field = new Field(this.pizza, point);
+            Fields.set(point, field);
+        }
+        // let field = new Field(this, point);
+        return field;
+    }
 }
 
 State.FREE = 0;
 State.USED = 8;
 State.SKIP = 1;
+
+State.Fields = new WeakMap();
+
+State.createInstanse = function (pizza) {
+    return new State(pizza)
+}
 
 module.exports = State;

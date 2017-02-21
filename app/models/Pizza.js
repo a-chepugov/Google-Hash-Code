@@ -1,16 +1,10 @@
 const fs = require('fs');
 
 const Cell = require('./Cell');
-const Field = require('./Field');
-const State = require('./State');
 
 class Pizza {
     constructor(data) {
         Object.assign(this, data);
-    }
-
-    createState() {
-        return new State(this)
     }
 
     toString() {
@@ -23,12 +17,6 @@ class Pizza {
             string += rowString;
         }
         return string;
-    }
-
-    createFieldForPoint(point) {
-        let field = new Field(this, point);
-
-        return field;
     }
 }
 
