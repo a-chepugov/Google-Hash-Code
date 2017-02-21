@@ -3,7 +3,7 @@ const Slice = require('./Slice');
 class Field {
     constructor(pizza, point) {
         let fieldCells = [];
-        let {R, C, H, cells} = pizza;
+        let {R, C, H, L, cells} = pizza;
         let {r, c} = point;
         let drMax = r + H < R ? H : (R - r);
 
@@ -22,6 +22,8 @@ class Field {
             fieldCells.push(row);
         }
         this.cells = fieldCells;
+
+        this.slices = this.createSlices(L);
     }
 
     get point() {
@@ -45,7 +47,7 @@ class Field {
         return string;
     }
 
-    createSlices() {
+    createSlices(L) {
         let cells = this.cells;
         let rMax = cells.length;
         let slices = [];
@@ -66,6 +68,16 @@ class Field {
                 slices.push(slice)
             }
         }
+
+        slices =
+            slices
+                .filter((item) => item.isEnoughItems(L))
+        ;
+
+        slices.forEach((item, index, items) => {
+            item.N = index
+        });
+
         return slices;
     };
 }

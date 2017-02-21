@@ -21,8 +21,8 @@ async function index() {
         console.time('set');
 
         // console.log('index.js(index):26 =>', `${set}`);
-        // console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
-        console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree, `${set}`);
+        console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
+        // console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree, `${set}`);
         // let q = set.forSave();
         // console.log(q);
 

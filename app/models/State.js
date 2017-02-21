@@ -137,10 +137,6 @@ class State {
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
 
-                let slices = this.pizza.createValidSlicesForPizzaPoint(point);
-                // console.log('State.js(changeLastSlice):134 =>', `${this}`);
-
-
                 // console.log('State.js(changeLastSlice):152 =>', q);
 
                 this.fillPosition(point, N + 1);
@@ -153,7 +149,8 @@ class State {
 
 
     fillPosition(point, N) {
-        let slices = this.pizza.createValidSlicesForPizzaPoint(point);
+        let field = this.pizza.createFieldForPoint(point);
+        let slices = field.slices;
 
         if (N) {
             // console.log('State.js(fillPosition):148 =>', N);
