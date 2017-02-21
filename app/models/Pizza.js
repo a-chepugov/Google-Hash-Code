@@ -38,7 +38,8 @@ class Pizza {
                 ;
 
             slices.forEach((item, index, items) => {
-                item.N = items.length - index - 1
+                // item.N = items.length - index - 1
+                item.N = index
             });
 
             return slices

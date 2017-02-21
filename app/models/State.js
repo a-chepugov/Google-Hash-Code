@@ -119,11 +119,41 @@ class State {
     changeLastSlice() {
         while (this.all.length) {
             let [item] = this.back();
+
+
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
+
                 let slices = this.pizza.createValidSlicesForPizzaPoint(point);
+                this.fillPosition(point, N + 1);
                 return item;
             }
+        }
+    }
+
+
+    fillPosition(point, N) {
+        let slices = this.pizza.createValidSlicesForPizzaPoint(point);
+        if (N) {
+            slices = slices.slice(N);
+        }
+        if (slices.length) {
+            for (let i = 0, l = slices.length; i < l; i++) {
+                let slice = slices[i];
+                let is = this.isCuttable(slice);
+                if (this.isCuttable(slice)) {
+                    this.cutSlice(slice);
+                    break;
+                } else {
+                    if (i < l - 1) {
+                        continue;
+                    } else {
+                        this.skipPoint(point);
+                    }
+                }
+            }
+        } else {
+            this.skipPoint(point);
         }
     }
 
@@ -145,46 +175,18 @@ class State {
     }
 
     * getAnotherSet() {
-        console.log(`State.js(getAnotherSet):139 => `, `${this}`);
-
+        let go = false;
         do {
-            console.time('cut');
 
             for (let point of this.nextFreePoint()) {
-                console.time(`cut ${point}`);
-
-                let slices = this.pizza.createValidSlicesForPizzaPoint(point);
-                if (slices.length) {
-                    for (let i = 0, l = slices.length; i < l; i++) {
-                        let slice = slices[i];
-                        let is = this.isCuttable(slice);
-                        if (this.isCuttable(slice)) {
-                            this.cutSlice(slice);
-                            break;
-                        } else {
-                            if (i < l - 1) {
-                                continue;
-                            } else {
-                                this.skipPoint(point);
-                            }
-                        }
-                    }
-                } else {
-                    this.skipPoint(point);
-                }
-
-                console.timeEnd(`cut ${point}`);
+                this.fillPosition(point)
             }
-
-            console.log(`State.js(getAnotherSet):172 ==========`, `${this}`);
-
-            console.timeEnd('cut');
+            console.log('State.js(getAnotherSet):190 =>',`${this}`);
 
             yield this;
 
-            this.changeLastSlice();
-
-        } while (false);
+            go = this.changeLastSlice();
+        } while (go);
 
     }
 
@@ -193,7 +195,7 @@ class State {
     }
 
     toString() {
-        let string = `${this.R} ${this.C}\n`;
+        let string = `\n`;
         let cells = this.cells;
         for (let row of cells) {
             let rowString = row
