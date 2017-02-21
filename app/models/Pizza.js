@@ -11,7 +11,7 @@ class Pizza {
     }
 
     createState() {
-        return new State(this.R, this.C, this)
+        return new State(this)
     }
 
     toString() {

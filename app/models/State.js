@@ -2,14 +2,13 @@ const Point = require('./Point');
 const Slice = require('./Slice');
 
 class State {
-    constructor(R, C) {
-        this.R = R;
-        this.C = C;
+    constructor(pizza) {
+        this.pizza = pizza;
         const FREE = State.FREE;
 
         let cells = [];
         for (let r = this.R; r--;) {
-            let row = Array(C).fill(FREE);
+            let row = Array(this.C).fill(FREE);
             cells.push(row)
         }
         this.cells = cells;
@@ -19,14 +18,22 @@ class State {
         this.all = [];
     }
 
+    get R() {
+        return this.pizza.R
+    }
+
+    get C() {
+        return this.pizza.C
+    }
+
     get area() {
         return this.R * this.C
     }
 
     get areaCutted() {
-        return this.cutted.reduce((result, item) =>{
+        return this.cutted.reduce((result, item) => {
             return result + item.area
-        }, 0 )
+        }, 0)
     }
 
     get areaSkipped() {
@@ -50,9 +57,9 @@ class State {
         let row = slice.getRow(0);
         const FREE = State.FREE;
 
-        for(let point of row) {
+        for (let point of row) {
             let state = this.getCellState(point.r, point.c);
-            if(state !== FREE) {
+            if (state !== FREE) {
                 return false;
             }
         }
@@ -110,7 +117,7 @@ class State {
     }
 
     backToNearestSlice() {
-        while(this.cutted.length) {
+        while (this.cutted.length) {
             let [item] = this.back();
             if (item instanceof Slice) {
                 return item
@@ -118,7 +125,7 @@ class State {
         }
     }
 
-    * iterate() {
+    * nextFreePoint() {
         let position = new Point(0, 0);
         const R = this.R;
         const C = this.C;
@@ -136,34 +143,39 @@ class State {
     }
 
     * getAnotherSet() {
-        console.log(`State.js(getAnotherSet):139 => `,`${this}`);
+        console.log(`State.js(getAnotherSet):139 => `, `${this}`);
 
         console.time('cut');
 
-        for (let point of this) {
+        for (let point of this.nextFreePoint()) {
             console.time(`cut ${point}`);
 
             let slices = Slice.createValidSlicesForPizzaPoint(this.pizza, point);
-
-
-            let [slice] = slices;
-
-            if (slice instanceof Slice) {
-                let is = state.isCuttable(slice);
-                if(state.isCuttable(slice)) {
-                    state.cutSlice(slice)
+            if (slices.length) {
+                for (let slice of slices) {
+                    let is = this.isCuttable(slice);
+                    if (this.isCuttable(slice)) {
+                        this.cutSlice(slice)
+                        break;
+                    } else {
+                        continue;
+                    }
                 }
             } else {
-                state.skipPoint(point);
+                this.skipPoint(point);
             }
+
+            console.timeEnd(`cut ${point}`);
         }
 
-        console.timeEnd(`cut ${point}`);
-        // console.log(`State.js(getAnotherSet):162 ==========`, `${this}`);
+        yield this;
+
+
+        console.log(`State.js(getAnotherSet):162 ==========`, `${this}`);
     }
 
     [Symbol.iterator]() {
-        return this.iterate();
+        return this.getAnotherSet();
     }
 
     toString() {
