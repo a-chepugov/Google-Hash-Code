@@ -26,25 +26,9 @@ class Pizza {
         return string;
     }
 
-    createValidSlicesForPizzaPoint(point) {
+    createValidSlicesForPoint(point) {
         let field = new Field(this, point);
-        let slicesAll = field.createSlices(point);
-
-        if (slicesAll.length) {
-            let {L} = this;
-            let slices =
-                    slicesAll
-                        .filter((item) => item.isEnoughItems(L))
-                ;
-
-            slices.forEach((item, index, items) => {
-                item.N = items.length - index - 1
-            });
-
-            return slices
-        } else {
-            return [];
-        }
+        return field;
     }
 }
 

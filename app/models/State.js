@@ -121,7 +121,7 @@ class State {
             let [item] = this.back();
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
-                let slices = this.pizza.createValidSlicesForPizzaPoint(point);
+                let slices = this.pizza.createValidSlicesForPoint(point);
                 return item;
             }
         }
@@ -145,18 +145,17 @@ class State {
     }
 
     * getAnotherSet() {
-        console.log(`State.js(getAnotherSet):139 => `, `${this}`);
-
         do {
             console.time('cut');
 
             for (let point of this.nextFreePoint()) {
                 console.time(`cut ${point}`);
 
-                let slices = this.pizza.createValidSlicesForPizzaPoint(point);
-                if (slices.length) {
-                    for (let i = 0, l = slices.length; i < l; i++) {
-                        let slice = slices[i];
+                let slicesBunch = this.pizza.createValidSlicesForPoint(point);
+
+                if (slicesBunch.length) {
+                    for (let i = 0, l = slicesBunch.length; i < l; i++) {
+                        let [slice] = slicesBunch;
                         let is = this.isCuttable(slice);
                         if (this.isCuttable(slice)) {
                             this.cutSlice(slice);
