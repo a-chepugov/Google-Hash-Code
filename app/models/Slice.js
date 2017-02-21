@@ -36,12 +36,22 @@ class Slice {
     }
 
     getPoint(N) {
-        let inOneRow = this.cells.reduce((result, row)=>{
-            return result.concat(row);
-        }, [] );
+        if(!this._inOneRow) {
+            this._inOneRow = this.cells.reduce((result, row)=>{
+                return result.concat(row);
+            }, [] );
+        }
+        let inOneRow = this._inOneRow;
 
         return (
             N < 0? inOneRow[inOneRow.length  + N] : inOneRow[N]
+        )
+    }
+
+    getRow(N) {
+        let cells = this.cells;
+        return (
+            N < 0? cells[cells .length  + N] : cells[N]
         )
     }
 
