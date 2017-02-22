@@ -1,9 +1,7 @@
 {
-  "name": "hash",
-  "version": "0.0.0",
-  "private": true,
+  "name": "pizza",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node --harmony ./index.js"
   },
   "dependencies": {
     "config": "^1.25.1"

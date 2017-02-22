@@ -25,7 +25,7 @@ async function saveData(output, fileName, data, size) {
 
     try {
         fs.writeFileSync(pathTemp, data);
-        fs.writeFileSync(path, data);
+        // fs.writeFileSync(path, data);
         console.info(`${pathTemp} saved`);
     } catch (err) {
         err.message += 'File saving error\n';
@@ -47,7 +47,7 @@ async function index() {
     for (let set of state.getAnotherSet()) {
         console.log('index.js(index) =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
         let setDump = set.forSave();
-        saveData(output, fileName, setDump, set.area);
+        saveData(output, fileName, setDump, set.areaCutted);
     }
 
     console.timeEnd('all');
