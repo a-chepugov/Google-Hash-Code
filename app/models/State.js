@@ -22,6 +22,8 @@ class State {
         this.cutted = [];
         this.skipped = [];
         this.all = [];
+
+        // this.q = this.area;
     }
 
     get R() {
@@ -133,6 +135,14 @@ class State {
 
     changeLastSlice() {
         while (this.cutted.length) {
+            // if (this.cutted.length < this.q) {
+            //     console.log(`State.js(changeLastSlice):140 => `,this.cutted.length);
+            //     if(this.cutted.length === 0) {
+            //         this.q = this.area;
+            //     } else {
+            //         this.q = this.cutted.length;
+            //     }
+            // }
             let [item] = this.back();
             if (item instanceof Slice) {
                 let {points: {0: point}, N} = item;
@@ -144,7 +154,7 @@ class State {
 
 
     fillPosition(point, N) {
-        let field = this.createFieldForPoint(point);
+        let field = this.createFieldForPoint(point, N + 1);
         let slices = field.slices;
 
         if (N) {
@@ -242,11 +252,11 @@ class State {
         return string;
     }
 
-    createFieldForPoint(point) {
+    createFieldForPoint(point, N) {
         let Fields = State.Fields;
         let field = Fields.get(point);
         if (!field) {
-            field = new Field(this.pizza, point);
+            field = new Field(this.pizza, point, N);
             Fields.set(point, field);
         }
         // let field = new Field(this, point);
