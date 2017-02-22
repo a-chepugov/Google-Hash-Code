@@ -143,13 +143,18 @@ class State {
     }
 
 
-    fillPosition(point, N) {
+    fillPosition(point, N, cb) {
         let field = this.createFieldForPoint(point);
         let slices = field.slices;
+
+        if(cb instanceof Function) {
+            cb(slices, N);
+        }
 
         if (N) {
             slices = slices.slice(N);
         }
+
         if (slices.length) {
             for (let i = 0, l = slices.length; i < l; i++) {
                 let slice = slices[i];
@@ -170,13 +175,13 @@ class State {
         }
     }
 
-    * getAnotherSet(skipStateCb, stopCb) {
+    * getAnotherSet(skipStateCb, stopCb, positionCb) {
         let skipped = this.area;
 
         do {
 
             for (let point of this.nextFreePoint()) {
-                this.fillPosition(point);
+                this.fillPosition(point, positionCb);
                 if (skipStateCb(this)) {
                     break;
                 }

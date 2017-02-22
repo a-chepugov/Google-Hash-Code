@@ -77,7 +77,7 @@ async function index() {
         }
     }
 
-    let message = {process: 'champion', state: 'done', message: `${state.areaCutted}/${state.area}`};
+    let message = {process: 'champion', state: 'done', result: state.areaCutted};
     process.send(JSON.stringify(message));
 
     console.timeEnd('all');

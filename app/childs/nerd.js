@@ -61,11 +61,10 @@ async function index() {
         return state.areaSkipped === 0;
     }
 
-
     for (let set of state.getAnotherSet(skipStateCb, stopCb)) {
         skipped = set.areaSkipped;
 
-        let message = {process: 'nerd', state: 'next', message: `${set.areaCutted}/${set.area}`};
+        let message = {process: 'nerd', state: 'next', result: set.areaCutted};
         process.send(JSON.stringify(message));
 
         // console.log('index.js(index) =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
@@ -73,7 +72,7 @@ async function index() {
         saveData(output, fileName, setDump, set.areaCutted);
     }
 
-    let message = {process: 'nerd', state: 'done', message: `${state.areaCutted}/${state.area}`};
+    let message = {process: 'nerd', state: 'done', result: state.areaCutted};
     process.send(JSON.stringify(message));
 
     console.timeEnd('all');
