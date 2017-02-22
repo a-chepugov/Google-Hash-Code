@@ -44,10 +44,24 @@ async function index() {
 
     let state = State.createInstanse(pizza);
 
-    for (let set of state.getAnotherSet()) {
+
+    let skipped = state.area;
+
+    function skipStateCb(state) {
+        // console.log('index.js(skipStateCb):55 =>',skipped, state.areaSkipped);
+        return skipped <= state.areaSkipped
+    }
+
+    function stopCb(state) {
+        // console.log('index.js(stopCb):63 =>',state.areaSkipped);
+        return state.areaSkipped === 0;
+    }
+
+    for (let set of state.getAnotherSet(skipStateCb, stopCb)) {
+        skipped = set.areaSkipped;
         console.log('index.js(index) =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
-        let setDump = set.forSave();
-        saveData(output, fileName, setDump, set.areaCutted);
+        // let setDump = set.forSave();
+        // saveData(output, fileName, setDump, set.areaCutted);
     }
 
     console.timeEnd('all');

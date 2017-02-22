@@ -170,24 +170,25 @@ class State {
         }
     }
 
-    * getAnotherSet() {
+    * getAnotherSet(skipStateCb, stopCb) {
         let skipped = this.area;
 
         do {
 
             for (let point of this.nextFreePoint()) {
                 this.fillPosition(point);
-                if (skipped <= this.areaSkipped) {
+                if (skipStateCb(this)) {
                     break;
                 }
             }
 
-            if (skipped > this.areaSkipped) {
+
+            if (!(skipStateCb(this))) {
                 skipped = this.areaSkipped;
                 yield this;
             }
 
-            if (this.areaSkipped === 0) {
+            if (stopCb(this)) {
                 break
             }
 

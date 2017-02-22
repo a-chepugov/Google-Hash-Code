@@ -74,7 +74,7 @@ class Field {
                 .filter((item) => item.isEnoughItems(L))
         ;
 
-        slices.forEach((item, index, items) => {
+        slices.forEach((item, index) => {
             item.N = index
         });
 
