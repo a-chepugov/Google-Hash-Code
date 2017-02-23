@@ -1,6 +1,7 @@
 {
-//   "file": "./input/example.in"
-   "file": "./input/small.in"
-//   "file": "./input/medium.in"
-//   "file": "./input/big.in"
+   "file": "./input/example.in",
+//   "file": "./input/small.in",
+//   "file": "./input/medium.in",
+//   "file": "./input/big.in",
+   "output": "./output"
 }

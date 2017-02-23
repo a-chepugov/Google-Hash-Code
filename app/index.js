@@ -1,31 +1,37 @@
+"use strict";
+
+const child_process = require('child_process');
 const fs = require('fs');
-const config = require('config');
 
-const exec = require('child_process').exec;
 
-const Pizza = require('./models/Pizza');
-
-exec("rm -rf ./cache", function (error, stdout, stderr) {
-});
+function killProcesses (processes) {
+    for (let process of processes) {
+        process.kill('SIGHUP');
+    }
+}
 
 async function index() {
-    let file = config.file;
+    const childs = ['champion', 'nerd', 'magician'];
 
-    console.time('pizza');
-    let pizza = await Pizza.createInstance(file);
-    console.timeEnd('pizza');
-    console.dir(`${pizza}`, {color: true, depth: null});
+    let processes = [];
 
-    let state = pizza.createState();
-
-    console.time('all cuts');
-    for (let set of state) {
-        console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree);
-        // let q = set.forSave();
-        // console.log(q);
+    console.time('all');
+    for (let child of childs) {
+        let childProcess = child_process.fork(`./app/childs/${child}.js`, ['--harmony']);
+        processes.push(childProcess);
     }
 
-    console.timeEnd('all cuts');
+    for (let process of processes) {
+        process.on('message', function (message) {
+            message = JSON.parse(message);
+            console.log(message.process, `${message.cutted}/${message.area} | ${message.free}`);
+
+            if(message.state === 'done') {
+                console.timeEnd('all');
+                killProcesses(processes)
+            }
+        });
+    }
 }
 
 module.exports = index;

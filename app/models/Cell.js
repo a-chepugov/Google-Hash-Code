@@ -1,10 +1,8 @@
 const Point = require('./Point');
-const State = require('./State');
 
-class Cell {
+class Cell extends Point {
     constructor(r, c, value) {
-        this.r = r;
-        this.c = c;
+        super(r, c);
         this.value = value
     }
 
