@@ -30,7 +30,7 @@ async function index() {
     let positionCb = function (slices, N) {
         if (N) {
             for (let i = 0, l = slices.length; i < l && i < N; i++) {
-                slices.N = N
+                slices[i].N = N
             }
         }
         shuffle(slices)
@@ -43,14 +43,14 @@ async function index() {
 
         let skipStateCb = function (state) {
             return skipped <= state.areaSkipped
-        }
+        };
 
         let stopCb = function (state) {
             return state.areaSkipped === 0;
         };
 
         for (let set of state.getAnotherSet({skipStateCb, stopCb, positionCb})) {
-            skipped = set.areaSkipped;
+            skipped = skipped < set.areaSkipped? skipped : set.areaSkipped;
 
             let setDump = set.forSave();
             saveResult(output, fileName, setDump, set.areaCutted);
@@ -59,7 +59,7 @@ async function index() {
             process.send(JSON.stringify(message));
         }
 
-        if (state.areaSkipped && state.areaFree === 0) {
+        if (state.area === state.areaCutted) {
             let message = createMessage('magician', state, 'done');
             process.send(JSON.stringify(message));
             break;

@@ -142,7 +142,6 @@ class State {
         }
     }
 
-
     fillPosition(point, N, cb) {
         let field = this.createFieldForPoint(point);
         let slices = field.slices;
@@ -180,7 +179,7 @@ class State {
             let skip = false;
 
             for (let point of this.nextFreePoint()) {
-                this.fillPosition(point, positionCb);
+                this.fillPosition(point, undefined, positionCb);
                 skip = skipStateCb(this);
                 if (skip) {
                     break;
