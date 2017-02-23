@@ -23,30 +23,29 @@ async function index() {
 
     let pizza = await Pizza.createInstance(file);
 
-    let state = State.createInstanse(pizza);
+    for (let skipNow = 0, skipMax = pizza.area; skipNow <= skipMax; skipNow++) {
+        let state = State.createInstanse(pizza);
 
-    for (let skipNow = 0, skipMax = state.area; skipNow <= skipMax; skipNow++) {
         let skipStateCb = function (state) {
-            return skipNow < state.areaSkipped
+            return state.areaSkipped > skipNow
         };
 
-        let stopCb = function stopCb(state) {
-            return state.areaSkipped === skipNow;
-        };
+        let stopCb = function () {};
 
-        let stop = false;
-
-        for (let set of state.getAnotherSet(skipStateCb, stopCb)) {
+        for (let set of state.getAnotherSet({skipStateCb, stopCb})) {
             let setDump = set.forSave();
             saveResult(output, fileName, setDump, set.areaCutted);
-            stop = true
+            let message = createMessage('champion', set, 'next');
+            process.send(JSON.stringify(message));
+            break;
         }
-        if (stop) {
+
+        if (state.areaSkipped <= skipNow) {
             break
         }
     }
 
-    let message = createMessage('champion', state, 'done');;
+    let message = createMessage('champion', {}, 'done');
     process.send(JSON.stringify(message));
 
     console.timeEnd('champion done');

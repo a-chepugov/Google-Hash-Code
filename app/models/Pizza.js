@@ -18,6 +18,10 @@ class Pizza {
         }
         return string;
     }
+
+    get area() {
+        return this.R * this.C;
+    }
 }
 
 Pizza.createInstance = async function (file) {

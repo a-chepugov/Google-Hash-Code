@@ -10,7 +10,7 @@ const shuffle = require('../helpers/shuffle');
 const saveResult = require('../helpers/saveResult');
 const createMessage = require('../helpers/createMessage');
 
-process.on('message', function(message){
+process.on('message', function (message) {
     console.log(message);
 });
 
@@ -27,9 +27,11 @@ async function index() {
     let pizza = await Pizza.createInstance(file);
 
 
-    let positionCb = function(slices, N) {
-        if(N) {
-            slices = slices.slice(N)
+    let positionCb = function (slices, N) {
+        if (N) {
+            for (let i = 0, l = slices.length; i < l && i < N; i++) {
+                slices.N = N
+            }
         }
         shuffle(slices)
     };
@@ -40,19 +42,15 @@ async function index() {
         let state = State.createInstanse(pizza);
 
         let skipStateCb = function (state) {
-            // console.log('index.js(skipStateCb):55 =>',skipped, state.areaSkipped);
             return skipped <= state.areaSkipped
         }
 
         let stopCb = function (state) {
-            // console.log('index.js(stopCb):63 =>',state.areaSkipped);
             return state.areaSkipped === 0;
         };
 
-        for (let set of state.getAnotherSet(skipStateCb, stopCb, positionCb)) {
+        for (let set of state.getAnotherSet({skipStateCb, stopCb, positionCb})) {
             skipped = set.areaSkipped;
-
-            // console.log('index.js(index):26 =>', set.area, set.areaCutted, set.areaSkipped, set.areaFree, `${set}`);
 
             let setDump = set.forSave();
             saveResult(output, fileName, setDump, set.areaCutted);
@@ -61,10 +59,9 @@ async function index() {
             process.send(JSON.stringify(message));
         }
 
-        if(state.areaSkipped) {
+        if (state.areaSkipped && state.areaFree === 0) {
             let message = createMessage('magician', state, 'done');
             process.send(JSON.stringify(message));
-
             break;
         }
     }

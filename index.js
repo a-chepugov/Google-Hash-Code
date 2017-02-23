@@ -1,7 +1,7 @@
 const app = require('./app');
 
 app()
-    .catch( (e)=>{
+    .catch((e) => {
             console.error(e);
             console.error(e.stack);
         }

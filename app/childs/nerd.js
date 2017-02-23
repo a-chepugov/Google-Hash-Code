@@ -9,7 +9,7 @@ const State = require('../models/State');
 const saveResult = require('../helpers/saveResult');
 const createMessage = require('../helpers/createMessage');
 
-process.on('message', function(message){
+process.on('message', function (message) {
     console.log(message);
 });
 
@@ -34,17 +34,17 @@ async function index() {
         return state.areaSkipped === 0;
     }
 
-    for (let set of state.getAnotherSet(skipStateCb, stopCb)) {
+    for (let set of state.getAnotherSet({skipStateCb, stopCb})) {
         skipped = set.areaSkipped;
 
-        let message = createMessage('nerd', state, 'next');
+        let message = createMessage('nerd', set, 'next');
         process.send(JSON.stringify(message));
 
         let setDump = set.forSave();
         saveResult(output, fileName, setDump, set.areaCutted);
     }
 
-    let message = createMessage('nerd', state, 'done');
+    let message = createMessage('nerd', {}, 'done');
     process.send(JSON.stringify(message));
 
     console.timeEnd('champion done');

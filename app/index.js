@@ -24,9 +24,11 @@ async function index() {
     for (let process of processes) {
         process.on('message', function (message) {
             message = JSON.parse(message);
-            console.log(message.process, `${message.cutted}/${message.area} | ${message.free}`);
 
-            if(message.state === 'done') {
+            if(message.state === 'next') {
+                console.log(`${message.cutted}/${message.area} | ${message.free} | ${message.skipped} |`, message.process);
+            } else if(message.state === 'done') {
+                console.log(message.process, 'done');
                 console.timeEnd('all');
                 killProcesses(processes)
             }

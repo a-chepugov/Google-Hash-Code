@@ -158,8 +158,8 @@ class State {
         if (slices.length) {
             for (let i = 0, l = slices.length; i < l; i++) {
                 let slice = slices[i];
-                let is = this.isCuttable(slice);
-                if (this.isCuttable(slice)) {
+                let cuttable = this.isCuttable(slice);
+                if (cuttable) {
                     this.cutSlice(slice);
                     break;
                 } else {
@@ -175,21 +175,19 @@ class State {
         }
     }
 
-    * getAnotherSet(skipStateCb, stopCb, positionCb) {
-        let skipped = this.area;
-
+    * getAnotherSet({skipStateCb, stopCb, positionCb}) {
         do {
+            let skip = false;
 
             for (let point of this.nextFreePoint()) {
                 this.fillPosition(point, positionCb);
-                if (skipStateCb(this)) {
+                skip = skipStateCb(this);
+                if (skip) {
                     break;
                 }
             }
 
-
-            if (!(skipStateCb(this))) {
-                skipped = this.areaSkipped;
+            if (!skip) {
                 yield this;
             }
 
@@ -224,7 +222,7 @@ class State {
     }
 
     toString() {
-        let string = `\n`;
+        let string = `${this.areaCutted} ${this.areaSkipped} ${this.areaFree}\n`;
         let cells = this.cells;
         for (let row of cells) {
             let rowString = row
@@ -268,6 +266,6 @@ State.Fields = new WeakMap();
 
 State.createInstanse = function (pizza) {
     return new State(pizza)
-}
+};
 
 module.exports = State;
